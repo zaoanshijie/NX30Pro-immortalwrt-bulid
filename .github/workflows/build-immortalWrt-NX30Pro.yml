@@ -2,54 +2,54 @@ name: Build immortalWrt
 
 on:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: "0 8 * * *"
   repository_dispatch:
   workflow_dispatch:
     inputs:
       my-input:
-        description: 'Select a device'
+        description: "Select a device"
         type: choice
         options:
-            - 'h3c_nx30pro'
-            - 'mt7981-spim-nor-rfb'
-            - 'mt7981-spim-nand-2500wan-gmac2'
-            - 'mt7981-spim-nand-rfb'
-            - 'mt7981-spim-nand-gsw'
-            - 'mt7981-emmc-rfb'
-            - 'mt7981-sd-rfb'
-            - 'mt7981-snfi-nand-2500wan-p5'
-            - 'mt7981-fpga-spim-nor'
-            - 'mt7981-fpga-snfi-nand'
-            - 'mt7981-fpga-spim-nand'
-            - 'mt7981-fpga-emmc'
-            - 'mt7981-fpga-sd'
-            - 'mt7981-360-t7'
-            - 'mt7981-360-t7-108M'
-            - 'abt_asr3000'
-            - 'cetron_ct3003'
-            - 'mt7981-clt-r30b1'
-            - 'mt7981-clt-r30b1-112M'
-            - 'xiaomi_mi-router-wr30u-stock'
-            - 'xiaomi_mi-router-wr30u-112m'
-            - 'xiaomi_mi-router-ax3000t-stock'
-            - 'xiaomi_mi-router-ax3000t'
-            - 'glinet_gl-mt3000'
-            - 'glinet_gl-x3000'
-            - 'glinet_gl-xe3000'
-            - 'glinet_gl-mt2500'
-            - 'jcg_q30'
-            - 'livinet_zr-3020'
-            - 'cmcc_a10'
-            - 'cmcc_rax3000m'
-            - 'cmcc_rax3000m-emmc'
-            - 'konka_komi-a31'
-            - 'imou_lc-hx3001'
-            - 'nradio_wt9103'
-            - 'nradio_wt9103_512m'
+          - "h3c_nx30pro"
+          - "mt7981-spim-nor-rfb"
+          - "mt7981-spim-nand-2500wan-gmac2"
+          - "mt7981-spim-nand-rfb"
+          - "mt7981-spim-nand-gsw"
+          - "mt7981-emmc-rfb"
+          - "mt7981-sd-rfb"
+          - "mt7981-snfi-nand-2500wan-p5"
+          - "mt7981-fpga-spim-nor"
+          - "mt7981-fpga-snfi-nand"
+          - "mt7981-fpga-spim-nand"
+          - "mt7981-fpga-emmc"
+          - "mt7981-fpga-sd"
+          - "mt7981-360-t7"
+          - "mt7981-360-t7-108M"
+          - "abt_asr3000"
+          - "cetron_ct3003"
+          - "mt7981-clt-r30b1"
+          - "mt7981-clt-r30b1-112M"
+          - "xiaomi_mi-router-wr30u-stock"
+          - "xiaomi_mi-router-wr30u-112m"
+          - "xiaomi_mi-router-ax3000t-stock"
+          - "xiaomi_mi-router-ax3000t"
+          - "glinet_gl-mt3000"
+          - "glinet_gl-x3000"
+          - "glinet_gl-xe3000"
+          - "glinet_gl-mt2500"
+          - "jcg_q30"
+          - "livinet_zr-3020"
+          - "cmcc_a10"
+          - "cmcc_rax3000m"
+          - "cmcc_rax3000m-emmc"
+          - "konka_komi-a31"
+          - "imou_lc-hx3001"
+          - "nradio_wt9103"
+          - "nradio_wt9103_512m"
         required: true
-        default: 'h3c_nx30pro'
+        default: "h3c_nx30pro"
   watch:
-    types: [ started ]
+    types: [started]
 
 env:
   REPO_URL: https://github.com/hanwckf/immortalwrt-mt798x
@@ -97,7 +97,7 @@ jobs:
         working-directory: /workdir
         run: |
           cd immortalWrt
-          LATEST_RELEASE=`curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" --silent  "https://api.github.com/repos/vivian8421/NX30Pro-immortalwrt-bulid/releases/latest" | jq -r .name`
+          LATEST_RELEASE=`curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" --silent  "https://api.github.com/repos/zaoanshijie/NX30Pro-immortalwrt-bulid/releases/latest" | jq -r .name`
           MODEL_NAME=`echo "${{ github.event.inputs.my-input }}" | tr '_' '-'`
           if [[ "$LATEST_RELEASE" == *"${{ env.LAST_SHORT_HASH }}"* ]]  && [[ "$LATEST_RELEASE" == *"$MODEL_NAME"* ]]; then
             echo "already exists in the latest release, stopping compile..."
@@ -107,19 +107,19 @@ jobs:
             echo "::set-output name=status::success"
           fi
 
-      - name: Send need compile to Telegram
-        if: steps.checkNeed.outputs.status == 'success'
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "Start Compile"
+      # - name: Send need compile to Telegram
+      #   if: steps.checkNeed.outputs.status == 'success'
+      #   uses: appleboy/telegram-action@master
+      #   with:
+      #     to: ${{ secrets.TELEGRAM_CHAT_ID }}
+      #     token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      #     message: "Start Compile"
 
       - name: Cache
         if: steps.checkNeed.outputs.status == 'success'
         uses: klever1988/cachewrtbuild@main
         with:
-          ccache: 'true'
+          ccache: "true"
           prefix: ${{ github.workspace }}/immortalWrt
       - name: Update feeds [更新配置]
         if: steps.checkNeed.outputs.status == 'success'
@@ -132,8 +132,6 @@ jobs:
           sed -i 's/192.168.1.1/192.168.6.1/g' package/base-files/files/bin/config_generate
           sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 
-
-
       - name: Replace configuration file [替换.config文件]
         if: steps.checkNeed.outputs.status == 'success'
         run: |
@@ -142,11 +140,9 @@ jobs:
           cp ${GITHUB_WORKSPACE}/.config .
           sed -i 's/h3c_nx30pro/${{ github.event.inputs.my-input }}/g' .config
 
-
       - name: Update feeds again
         if: steps.checkNeed.outputs.status == 'success'
         run: cd immortalWrt && ./scripts/feeds update -a && ./scripts/feeds install -a
-
 
       - name: Download package [依赖处理]
         id: package
@@ -182,7 +178,7 @@ jobs:
 
       - name: Organize files[文件打包]
         id: organize
-        if:  steps.checkNeed.outputs.status == 'success' && env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+        if: steps.checkNeed.outputs.status == 'success' && env.UPLOAD_FIRMWARE == 'true' && !cancelled()
         run: |
           cd $GITHUB_WORKSPACE/immortalWrt/bin/targets/*/*
           rm -rf packages
@@ -205,16 +201,14 @@ jobs:
           name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
           path: ${{ env.FIRMWARE }}
 
-
-      - name: Send File to Telegram
-        uses: appleboy/telegram-action@master
-        if: steps.checkNeed.outputs.status == 'success'
-        with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "File"
-          document: ${{ env.FIRMWARE }}/*
-
+      # - name: Send File to Telegram
+      #   uses: appleboy/telegram-action@master
+      #   if: steps.checkNeed.outputs.status == 'success'
+      #   with:
+      #     to: ${{ secrets.TELEGRAM_CHAT_ID }}
+      #     token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      #     message: "File"
+      #     document: ${{ env.FIRMWARE }}/*
 
       - name: Prepare release tag
         id: release_tag
@@ -252,14 +246,13 @@ jobs:
 
             `md5信息`
             > ${{ env.MD5 }}
-            - **如果您觉得该项目对您有帮助并愿意打赏,欢迎您捐助打赏，请点击<a href="https://raw.githubusercontent.com/vivian8421/NX30Pro-immortalwrt-bulid/main/zfb.jpg" target="_blank" rel="noopener">这里</a>**
-
+            - **如果您觉得该项目对您有帮助并愿意打赏,欢迎您捐助打赏，请点击<a href="https://raw.githubusercontent.com/zaoanshijie/NX30Pro-immortalwrt-bulid/main/zfb.jpg" target="_blank" rel="noopener">这里</a>**
 
       - name: Update latest tag
         if: steps.checkNeed.outputs.status == 'success'
         run: |
-          git config --local user.email "vivian84217963@gmail.com"
-          git config --local user.name "vivian8421"
+          git config --local user.email "zaoanshijie@gmail.com"
+          git config --local user.name "zaoanshijie"
           git pull --unshallow
           git tag -f latest ${{ steps.release_tag.outputs.date_prefix }}-${{ steps.process.outputs.model_name }}-${{ env.LAST_SHORT_HASH }}
           git push origin --tags -f
