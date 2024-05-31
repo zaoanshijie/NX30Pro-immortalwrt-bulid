@@ -129,7 +129,7 @@ jobs:
         if: steps.checkNeed.outputs.status == 'success'
         run: |
           cd immortalWrt
-          sed -i 's/192.168.1.1/192.168.6.1/g' package/base-files/files/bin/config_generate
+          sed -i 's/192.168.1.1/192.168.15.1/g' package/base-files/files/bin/config_generate
           sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 
       - name: Replace configuration file [替换.config文件]
@@ -236,7 +236,7 @@ jobs:
           body: |
             - 本项目是基于Hanwckf源代码编译，**当前选择编译适用于${{ github.event.inputs.my-input }}设备**，无任何第三方软件包。
             - 历史版本将自动保留在下方。
-            - 默认IP：192.168.6.1
+            - 默认IP：192.168.15.1
             - 默认账号：root
             - 默认密码：(空)
             - Head Hash比对 当前:${{ env.LAST_SHORT_HASH }} / 源码更新详情[点击这里查看](${{ env.REPO_URL }}/commits/${{ env.REPO_BRANCH }})
