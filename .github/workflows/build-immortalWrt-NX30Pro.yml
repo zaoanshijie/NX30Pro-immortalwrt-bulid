@@ -221,40 +221,40 @@ jobs:
         id: process
         run: echo "::set-output name=model_name::$(echo ${{ github.event.inputs.my-input }} | tr '_' '-')"
 
-      - name: Upload OpenWrt Firmware to Release [Release发布]
-        id: release
-        uses: ncipollo/release-action@v1
-        if: steps.checkNeed.outputs.status == 'success' && steps.organize.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
-        with:
-          name: R${{ steps.organize.outputs.release_tag }}-${{ steps.process.outputs.model_name }}-${{ env.LAST_SHORT_HASH }}
-          allowUpdates: true
-          removeArtifacts: true
-          tag: ${{ steps.release_tag.outputs.date_prefix }}-${{ steps.process.outputs.model_name }}-${{ env.LAST_SHORT_HASH }}
-          commit: main
-          token: ${{ secrets.GH_TOKEN }}
-          artifacts: ${{ env.FIRMWARE }}/*
-          body: |
-            - 本项目是基于Hanwckf源代码编译，**当前选择编译适用于${{ github.event.inputs.my-input }}设备**，无任何第三方软件包。
-            - 历史版本将自动保留在下方。
-            - 默认IP：192.168.15.1
-            - 默认账号：root
-            - 默认密码：(空)
-            - Head Hash比对 当前:${{ env.LAST_SHORT_HASH }} / 源码更新详情[点击这里查看](${{ env.REPO_URL }}/commits/${{ env.REPO_BRANCH }})
-            - **请仔细检查MD5以确保完整性后再进行刷入！**
-            - 升级更新选择sysupgrade.bin,出厂设置请刷factory.bin。
-            - 升级前先下载备份，升级后还原备份后重新安装需要的插件即可。
+      # - name: Upload OpenWrt Firmware to Release [Release发布]
+      #   id: release
+      #   uses: ncipollo/release-action@v1
+      #   if: steps.checkNeed.outputs.status == 'success' && steps.organize.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
+      #   with:
+      #     name: R${{ steps.organize.outputs.release_tag }}-${{ steps.process.outputs.model_name }}-${{ env.LAST_SHORT_HASH }}
+      #     allowUpdates: true
+      #     removeArtifacts: true
+      #     tag: ${{ steps.release_tag.outputs.date_prefix }}-${{ steps.process.outputs.model_name }}-${{ env.LAST_SHORT_HASH }}
+      #     commit: main
+      #     token: ${{ secrets.GH_TOKEN }}
+      #     artifacts: ${{ env.FIRMWARE }}/*
+      #     body: |
+      #       - 本项目是基于Hanwckf源代码编译，**当前选择编译适用于${{ github.event.inputs.my-input }}设备**，无任何第三方软件包。
+      #       - 历史版本将自动保留在下方。
+      #       - 默认IP：192.168.15.1
+      #       - 默认账号：root
+      #       - 默认密码：(空)
+      #       - Head Hash比对 当前:${{ env.LAST_SHORT_HASH }} / 源码更新详情[点击这里查看](${{ env.REPO_URL }}/commits/${{ env.REPO_BRANCH }})
+      #       - **请仔细检查MD5以确保完整性后再进行刷入！**
+      #       - 升级更新选择sysupgrade.bin,出厂设置请刷factory.bin。
+      #       - 升级前先下载备份，升级后还原备份后重新安装需要的插件即可。
 
-            `md5信息`
-            > ${{ env.MD5 }}
-            - **如果您觉得该项目对您有帮助并愿意打赏,欢迎您捐助打赏，请点击<a href="https://raw.githubusercontent.com/zaoanshijie/NX30Pro-immortalwrt-bulid/main/zfb.jpg" target="_blank" rel="noopener">这里</a>**
+      #       `md5信息`
+      #       > ${{ env.MD5 }}
+      #       - **如果您觉得该项目对您有帮助并愿意打赏,欢迎您捐助打赏，请点击<a href="https://raw.githubusercontent.com/zaoanshijie/NX30Pro-immortalwrt-bulid/main/zfb.jpg" target="_blank" rel="noopener">这里</a>**
 
-      - name: Update latest tag
-        if: steps.checkNeed.outputs.status == 'success'
-        run: |
-          git config --local user.email "zaoanshijie@gmail.com"
-          git config --local user.name "zaoanshijie"
-          git pull --unshallow
-          git tag -f latest ${{ steps.release_tag.outputs.date_prefix }}-${{ steps.process.outputs.model_name }}-${{ env.LAST_SHORT_HASH }}
-          git push origin --tags -f
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Update latest tag
+      #   if: steps.checkNeed.outputs.status == 'success'
+      #   run: |
+      #     git config --local user.email "zaoanshijie@gmail.com"
+      #     git config --local user.name "zaoanshijie"
+      #     git pull --unshallow
+      #     git tag -f latest ${{ steps.release_tag.outputs.date_prefix }}-${{ steps.process.outputs.model_name }}-${{ env.LAST_SHORT_HASH }}
+      #     git push origin --tags -f
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
